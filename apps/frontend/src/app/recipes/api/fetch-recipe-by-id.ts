@@ -1,10 +1,9 @@
 import { Recipe } from '../types/recipe';
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+import { RECIPES_URL } from './url';
 
 export async function fetchRecipeById(id: string): Promise<Recipe> {
   try {
-    const response = await fetch(`${API_BASE_URL}/recipes/${id}`);
+    const response = await fetch(`${RECIPES_URL}/${id}`);
     
     if (!response.ok) {
       throw new Error(`Failed to fetch recipe: ${response.status} ${response.statusText}`);
