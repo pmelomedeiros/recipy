@@ -1,135 +1,320 @@
-# Turborepo starter
+# Recipy
 
-This Turborepo starter is maintained by the Turborepo core team.
+A recipe management application.
 
-## Using this example
+## Project Overview
 
-Run the following command:
+Recipy is a recipe management platform that allows users to create, manage, and organize recipes with ingredients and categories. Built with a full-stack TypeScript architecture and using a monorepo approach.
 
-```sh
-npx create-turbo@latest
+## 🚀 Quick Start (Local Development)
+
+### Prerequisites
+
+- **Node.js** 18+
+- **Docker** and **Docker Compose**
+- **npm** (comes with Node.js)
+
+### 1. Clone and Install Dependencies
+
+```bash
+git clone <repository-url>
+cd recipy
+npm install
 ```
 
-## What's inside?
+### 2. Start the Database
 
-This Turborepo includes the following packages/apps:
+First, make sure Docker is running.
+
+Start PostgreSQL using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+This will start PostgreSQL on `localhost:5432` with:
+
+- Database: `recipy`
+- Username: `postgres`
+- Password: `postgres`
+
+### 3. Set Up Environment Variables
+
+Create environment files for the backend:
+
+```bash
+# apps/backend/.env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/recipy?schema=public"
+API_PORT=3000
+```
+
+Create environment file for the frontend (only if using different port):
+
+```bash
+# apps/frontend/.env.local
+NEXT_PUBLIC_API_URL=http://localhost:3000/api
+```
+
+> **Note**: Skip this if the backend uses the default port 3000 - the frontend will automatically connect to `http://localhost:3000/api`.
+
+### 4. Initialize the Database
+
+Generate Prisma client and push schema to database:
+
+```bash
+# Generate Prisma client
+cd apps/backend
+npm run db:generate
+
+# Push database schema
+npm run db:push
+
+# Optional: Seed the database with sample data
+npx ts-node prisma/seed.ts
+
+# Return to root directory
+cd ../..
+```
+
+### 5. Start Development Servers
+
+Start both backend and frontend:
+
+```bash
+npm run dev
+```
+
+Or start them individually:
+
+```bash
+# Backend only (NestJS API)
+npm run dev --filter=backend
+
+# Frontend only (Next.js app)
+npm run dev --filter=frontend
+```
+
+### 6. Access the Application
+
+- **Frontend**: <http://localhost:3001> (Next.js web app)
+- **Backend API**: <http://localhost:3000/api> (NestJS API server)
+- **Database**: `localhost:5432` (PostgreSQL - not directly accessible via browser)
+
+## 📁 Project Structure
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `apps/backend`: A [NestJS](https://nestjs.com/) API server with PostgreSQL database
+- `apps/frontend`: A [Next.js](https://nextjs.org/) web application
+- `@repo/ui`: Shared React component library
+- `@repo/eslint-config`: ESLint configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@repo/typescript-config`: Shared TypeScript configurations
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+### Tech Stack
 
-### Utilities
+- **Backend**: NestJS, Prisma ORM, PostgreSQL, TypeScript
+- **Frontend**: Next.js 15, React 19, Tailwind CSS v4, TypeScript
+- **Database**: PostgreSQL (via Docker)
+- **Development**: Turborepo, ESLint, Prettier
 
-This Turborepo has some additional tools already setup for you:
+## 🛠️ Development Commands
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Database Commands
 
-### Build
+```bash
+# Generate Prisma client after schema changes
+npm run db:generate
 
-To build all apps and packages, run the following command:
+# Push schema changes to database (development)
+npm run db:push
 
-```
-cd my-turborepo
+# Run database migrations (production)
+npm run db:migrate
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
+# Open Prisma Studio (database GUI)
+npx prisma studio --schema=apps/backend/prisma/schema.prisma
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+# Reset database (⚠️ destructive)
+npx prisma db push --force-reset --schema=apps/backend/prisma/schema.prisma
 ```
 
-### Develop
+### Build Commands
 
-To develop all apps and packages, run the following command:
+Build all apps and packages:
 
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
+```bash
+npm run build
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+Build specific apps:
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+```bash
+# Build backend only
+npm run build --filter=backend
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+# Build frontend only
+npm run build --filter=frontend
 ```
 
-### Remote Caching
+### Code Quality
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+```bash
+# Run linting
+npm run lint
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+# Run type checking
+npm run check-types
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+# Format code
+npm run format
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+### Testing
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+```bash
+# Run all tests
+npm test
 
+# Run backend tests
+npm test --filter=backend
+
+# Run tests in watch mode
+npm run test:watch --filter=backend
+
+# Run e2e tests
+npm run test:e2e --filter=backend
 ```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+## 🔧 Troubleshooting
+
+### Database Issues
+
+If you encounter database connection issues:
+
+```bash
+# Check if PostgreSQL container is running
+docker-compose ps
+
+# Restart database container
+docker-compose restart postgres
+
+# Check database logs
+docker-compose logs postgres
+
+# Reset database if needed
+docker-compose down -v && docker-compose up -d
 ```
 
-## Useful Links
+### Port Conflicts
 
-Learn more about the power of Turborepo:
+If ports are already in use:
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- **Port 3000**: Backend API - change `API_PORT` in `apps/backend/.env`
+- **Port 3001**: Frontend - Next.js will automatically use next available port
+- **Port 5432**: PostgreSQL - change port mapping in `docker-compose.yml`
+
+### Clear Node Modules
+
+If you encounter dependency issues:
+
+```bash
+# Clean install
+rm -rf node_modules package-lock.json
+npm install
+
+# Or clean all workspaces
+npx turbo clean
+npm install
+```
+
+## 🚀 Production Deployment
+
+### Environment Variables
+
+For production, set these environment variables:
+
+**Backend (`apps/backend/.env.production`):**
+
+```bash
+DATABASE_URL="your-production-database-url"
+API_PORT=3000
+NODE_ENV=production
+```
+
+**Frontend (`apps/frontend/.env.production`):**
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-api-domain.com/api
+```
+
+### Build for Production
+
+```bash
+# Build all apps
+npm run build
+
+# Start production servers
+npm run start
+```
+
+## 📚 API Documentation
+
+### Backend API Endpoints
+
+The NestJS backend provides the following API endpoints:
+
+- **GET** `/api/recipes` - Get all recipes
+- **GET** `/api/recipes/:id` - Get recipe by ID
+- **POST** `/api/recipes` - Create new recipe
+- **PUT** `/api/recipes/:id` - Update recipe
+- **DELETE** `/api/recipes/:id` - Delete recipe
+
+- **GET** `/api/users` - Get all users
+- **GET** `/api/users/:id` - Get user by ID
+- **POST** `/api/users` - Create new user
+
+- **GET** `/api/ingredients` - Get all ingredients
+- **POST** `/api/ingredients` - Create new ingredient
+
+- **GET** `/api/categories` - Get all categories
+- **POST** `/api/categories` - Create new category
+
+### Frontend Routes
+
+- `/` - Homepage with navigation to recipes
+- `/recipes` - Browse all recipes in card format
+
+## 🎯 Features
+
+- ✅ **Recipe Management**: Create, read, update, delete recipes
+- ✅ **User System**: User accounts and recipe ownership
+- ✅ **Ingredients**: Track recipe ingredients with quantities
+- ✅ **Categories**: Organize recipes by categories
+- ✅ **Responsive Design**: Works on desktop, tablet, and mobile
+- ✅ **Type Safety**: Full TypeScript support across frontend and backend
+- ✅ **Modern Stack**: Next.js 15, React 19, NestJS, Prisma, PostgreSQL
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Run tests (`npm test`)
+5. Run linting (`npm run lint`)
+6. Commit your changes (`git commit -m 'Add amazing feature'`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🔗 Useful Links
+
+Learn more about the technologies used in this project:
+
+- [Turborepo Documentation](https://turborepo.com/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [NestJS Documentation](https://nestjs.com/)
+- [Prisma Documentation](https://prisma.io/docs/)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
