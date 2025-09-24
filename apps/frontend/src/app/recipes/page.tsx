@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Recipe } from "@/types/recipe";
+import { Recipe } from "./types/recipe";
 import { fetchRecipes } from "@/lib/api";
 import RecipeCard from "./components/recipe-card";
 import LoadingRecipes from "./components/loading-recipes";

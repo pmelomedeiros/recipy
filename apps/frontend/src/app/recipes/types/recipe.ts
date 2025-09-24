@@ -1,28 +1,11 @@
-export enum Difficulty {
+import { User } from './user';
+import { Ingredient } from './ingredient';
+import { Category } from './category';
+
+export enum RecipeDifficulty {
   EASY = 'EASY',
   MEDIUM = 'MEDIUM',
   HARD = 'HARD'
-}
-
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  avatarUrl?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Ingredient {
-  id: string;
-  name: string;
-  description?: string;
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  description?: string;
 }
 
 export interface RecipeIngredient {
@@ -49,7 +32,7 @@ export interface Recipe {
   prepTime?: number;
   cookTime?: number;
   servings?: number;
-  difficulty: Difficulty;
+  difficulty: RecipeDifficulty;
   userId: string;
   createdAt: string;
   updatedAt: string;

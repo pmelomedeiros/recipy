@@ -1,13 +1,13 @@
-import { Recipe, Difficulty } from '@/types/recipe';
+import { Recipe, RecipeDifficulty } from '../types/recipe';
 
 interface RecipeCardProps {
   recipe: Recipe;
 }
 
 const difficultyColors = {
-  [Difficulty.EASY]: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-  [Difficulty.MEDIUM]: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-  [Difficulty.HARD]: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+  [RecipeDifficulty.EASY]: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+  [RecipeDifficulty.MEDIUM]: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  [RecipeDifficulty.HARD]: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
 };
 
 function formatTime(minutes?: number): string {
