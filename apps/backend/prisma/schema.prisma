@@ -1,0 +1,99 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  name       String
+  avatarUrl  String?  @map("avatar_url")
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+  
+  recipes    Recipe[]
+  
+  @@map("users")
+}
+
+model Recipe {
+  id           String     @id @default(cuid())
+  title        String
+  description  String?
+  instructions String[]
+  prepTime     Int?       @map("prep_time")
+  cookTime     Int?       @map("cook_time")
+  servings     Int?
+  difficulty   Difficulty @default(EASY)
+  userId       String     @map("user_id")
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipeIngredients RecipeIngredient[]
+  recipeCategories  RecipeCategory[]
+  
+  @@map("recipes")
+}
+
+model Ingredient {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  
+  recipeIngredients RecipeIngredient[]
+  
+  @@map("ingredients")
+}
+
+model RecipeIngredient {
+  id           String @id @default(cuid())
+  recipeId     String @map("recipe_id")
+  ingredientId String @map("ingredient_id")
+  quantity     String
+  unit         String?
+  
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
+  
+  @@unique([recipeId, ingredientId])
+  @@map("recipe_ingredients")
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+  
+  recipeCategories RecipeCategory[]
+  
+  @@map("categories")
+}
+
+model RecipeCategory {
+  id         String @id @default(cuid())
+  recipeId   String @map("recipe_id")
+  categoryId String @map("category_id")
+  
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  
+  @@unique([recipeId, categoryId])
+  @@map("recipe_categories")
+}
