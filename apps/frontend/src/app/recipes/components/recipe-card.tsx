@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Recipe, RecipeDifficulty } from '../types/recipe';
 
 interface RecipeCardProps {
@@ -31,8 +32,9 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
   const totalTime = (recipe.prepTime || 0) + (recipe.cookTime || 0);
   
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden">
-      <div className="p-6">
+    <Link href={`/recipes/${recipe.id}`} className="block">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 overflow-hidden cursor-pointer">
+        <div className="p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-3">
           <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 line-clamp-2">
@@ -120,7 +122,8 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             By {recipe.user.name}
           </p>
         </div>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 }
