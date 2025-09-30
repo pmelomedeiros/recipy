@@ -17,7 +17,7 @@ Recipy is a recipe management platform that allows users to create, manage, and 
 ### 1. Clone and Install Dependencies
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:pmelomedeiros/recipy.git
 cd recipy
 npm install
 ```
@@ -106,9 +106,6 @@ npm run dev --filter=frontend
 
 - `apps/backend`: A [NestJS](https://nestjs.com/) API server with PostgreSQL database
 - `apps/frontend`: A [Next.js](https://nextjs.org/) web application
-- `@repo/ui`: Shared React component library
-- `@repo/eslint-config`: ESLint configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: Shared TypeScript configurations
 
 ### Tech Stack
 
@@ -225,36 +222,6 @@ npm install
 # Or clean all workspaces
 npx turbo clean
 npm install
-```
-
-## 🚀 Production Deployment
-
-### Environment Variables
-
-For production, set these environment variables:
-
-**Backend (`apps/backend/.env.production`):**
-
-```bash
-DATABASE_URL="your-production-database-url"
-API_PORT=3000
-NODE_ENV=production
-```
-
-**Frontend (`apps/frontend/.env.production`):**
-
-```bash
-NEXT_PUBLIC_API_URL=https://your-api-domain.com/api
-```
-
-### Build for Production
-
-```bash
-# Build all apps
-npm run build
-
-# Start production servers
-npm run start
 ```
 
 ## 📚 API Documentation
