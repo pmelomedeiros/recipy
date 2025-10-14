@@ -3,7 +3,10 @@
     "allow": [
       "Bash(npx tsc:*)",
       "Bash(npx ts-node:*)",
-      "Bash(npm run check-types:*)"
+      "Bash(npm run check-types:*)",
+      "Bash(npm install)",
+      "Bash(docker-compose up:*)",
+      "Bash(npm run:*)"
     ],
     "deny": [],
     "ask": []

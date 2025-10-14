@@ -3,13 +3,13 @@ import { DatabaseService } from '../database/database.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { QueryUserDto } from './dto/query-user.dto';
-import { UserResponseDto, PaginatedUserResponseDto } from './dto/user-response.dto';
+import { UserDto, PaginatedUserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly database: DatabaseService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserDto> {
     const existingUser = await this.database.user.findUnique({
       where: { email: createUserDto.email },
     });
@@ -30,7 +30,7 @@ export class UsersService {
     return this.formatUserResponse(user);
   }
 
-  async findAll(queryDto: QueryUserDto): Promise<PaginatedUserResponseDto> {
+  async findAll(queryDto: QueryUserDto): Promise<PaginatedUserDto> {
     const { page = 1, limit = 10, search, sortBy = 'createdAt', sortOrder = 'desc' } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -69,7 +69,7 @@ export class UsersService {
     };
   }
 
-  async findOne(id: string): Promise<UserResponseDto> {
+  async findOne(id: string): Promise<UserDto> {
     const user = await this.database.user.findUnique({
       where: { id },
       include: {
@@ -86,7 +86,7 @@ export class UsersService {
     return this.formatUserResponse(user);
   }
 
-  async findByEmail(email: string): Promise<UserResponseDto> {
+  async findByEmail(email: string): Promise<UserDto> {
     const user = await this.database.user.findUnique({
       where: { email },
       include: {
@@ -103,7 +103,7 @@ export class UsersService {
     return this.formatUserResponse(user);
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserResponseDto> {
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserDto> {
     const existingUser = await this.database.user.findUnique({
       where: { id },
     });
@@ -149,7 +149,7 @@ export class UsersService {
     });
   }
 
-  private formatUserResponse(user: any): UserResponseDto {
+  private formatUserResponse(user: any): UserDto {
     return {
       id: user.id,
       email: user.email,

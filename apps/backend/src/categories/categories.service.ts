@@ -1,15 +1,26 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../database/database.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { QueryCategoryDto } from './dto/query-category.dto';
-import { CategoryResponseDto, PaginatedCategoryResponseDto } from './dto/category-response.dto';
+import { CategoryDto, PaginatedCategoryDto } from './dto/category.dto';
+
+type CategoryWithCount = Prisma.CategoryGetPayload<{
+  include: {
+    _count: {
+      select: {
+        recipeCategories: true;
+      };
+    };
+  };
+}>;
 
 @Injectable()
 export class CategoriesService {
   constructor(private readonly database: DatabaseService) {}
 
-  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryResponseDto> {
+  async create(createCategoryDto: CreateCategoryDto): Promise<CategoryDto> {
     const existingCategory = await this.database.category.findUnique({
       where: { name: createCategoryDto.name },
     });
@@ -30,7 +41,7 @@ export class CategoriesService {
     return this.formatCategoryResponse(category);
   }
 
-  async findAll(queryDto: QueryCategoryDto): Promise<PaginatedCategoryResponseDto> {
+  async findAll(queryDto: QueryCategoryDto): Promise<PaginatedCategoryDto> {
     const { page = 1, limit = 10, search, sortBy = 'name', sortOrder = 'asc' } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -71,7 +82,7 @@ export class CategoriesService {
     };
   }
 
-  async findOne(id: string): Promise<CategoryResponseDto> {
+  async findOne(id: string): Promise<CategoryDto> {
     const category = await this.database.category.findUnique({
       where: { id },
       include: {
@@ -88,7 +99,7 @@ export class CategoriesService {
     return this.formatCategoryResponse(category);
   }
 
-  async findByName(name: string): Promise<CategoryResponseDto> {
+  async findByName(name: string): Promise<CategoryDto> {
     const category = await this.database.category.findUnique({
       where: { name },
       include: {
@@ -105,7 +116,7 @@ export class CategoriesService {
     return this.formatCategoryResponse(category);
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<CategoryResponseDto> {
+  async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<CategoryDto> {
     const existingCategory = await this.database.category.findUnique({
       where: { id },
     });
@@ -162,7 +173,7 @@ export class CategoriesService {
     });
   }
 
-  private formatCategoryResponse(category: any): CategoryResponseDto {
+  private formatCategoryResponse(category: CategoryWithCount): CategoryDto {
     return {
       id: category.id,
       name: category.name,

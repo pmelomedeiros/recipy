@@ -1,4 +1,4 @@
-export class IngredientResponseDto {
+export class IngredientDto {
   id: string;
   name: string;
   description?: string;
@@ -7,8 +7,8 @@ export class IngredientResponseDto {
   };
 }
 
-export class PaginatedIngredientResponseDto {
-  ingredients: IngredientResponseDto[];
+export class PaginatedIngredientDto {
+  ingredients: IngredientDto[];
   total: number;
   page: number;
   limit: number;

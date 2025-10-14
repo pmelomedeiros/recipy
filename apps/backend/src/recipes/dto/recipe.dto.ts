@@ -1,6 +1,6 @@
 import { Difficulty } from '@prisma/client';
 
-export class RecipeIngredientResponseDto {
+export class RecipeIngredientDto {
   id: string;
   quantity: string;
   unit?: string;
@@ -11,7 +11,7 @@ export class RecipeIngredientResponseDto {
   };
 }
 
-export class RecipeCategoryResponseDto {
+export class RecipeCategoryDto {
   id: string;
   category: {
     id: string;
@@ -20,7 +20,7 @@ export class RecipeCategoryResponseDto {
   };
 }
 
-export class RecipeResponseDto {
+export class RecipeDto {
   id: string;
   title: string;
   description?: string;
@@ -37,12 +37,12 @@ export class RecipeResponseDto {
     email: string;
     avatarUrl?: string;
   };
-  recipeIngredients?: RecipeIngredientResponseDto[];
-  recipeCategories?: RecipeCategoryResponseDto[];
+  recipeIngredients?: RecipeIngredientDto[];
+  recipeCategories?: RecipeCategoryDto[];
 }
 
-export class PaginatedRecipeResponseDto {
-  recipes: RecipeResponseDto[];
+export class PaginatedRecipeDto {
+  recipes: RecipeDto[];
   total: number;
   page: number;
   limit: number;

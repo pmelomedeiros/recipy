@@ -3,13 +3,13 @@ import { DatabaseService } from '../database/database.service';
 import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { QueryIngredientDto } from './dto/query-ingredient.dto';
-import { IngredientResponseDto, PaginatedIngredientResponseDto } from './dto/ingredient-response.dto';
+import { IngredientDto, PaginatedIngredientDto } from './dto/ingredient.dto';
 
 @Injectable()
 export class IngredientsService {
   constructor(private readonly database: DatabaseService) {}
 
-  async create(createIngredientDto: CreateIngredientDto): Promise<IngredientResponseDto> {
+  async create(createIngredientDto: CreateIngredientDto): Promise<IngredientDto> {
     const existingIngredient = await this.database.ingredient.findUnique({
       where: { name: createIngredientDto.name },
     });
@@ -30,7 +30,7 @@ export class IngredientsService {
     return this.formatIngredientResponse(ingredient);
   }
 
-  async findAll(queryDto: QueryIngredientDto): Promise<PaginatedIngredientResponseDto> {
+  async findAll(queryDto: QueryIngredientDto): Promise<PaginatedIngredientDto> {
     const { page = 1, limit = 10, search, sortBy = 'name', sortOrder = 'asc' } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -71,7 +71,7 @@ export class IngredientsService {
     };
   }
 
-  async findOne(id: string): Promise<IngredientResponseDto> {
+  async findOne(id: string): Promise<IngredientDto> {
     const ingredient = await this.database.ingredient.findUnique({
       where: { id },
       include: {
@@ -88,7 +88,7 @@ export class IngredientsService {
     return this.formatIngredientResponse(ingredient);
   }
 
-  async findByName(name: string): Promise<IngredientResponseDto> {
+  async findByName(name: string): Promise<IngredientDto> {
     const ingredient = await this.database.ingredient.findUnique({
       where: { name },
       include: {
@@ -105,7 +105,7 @@ export class IngredientsService {
     return this.formatIngredientResponse(ingredient);
   }
 
-  async update(id: string, updateIngredientDto: UpdateIngredientDto): Promise<IngredientResponseDto> {
+  async update(id: string, updateIngredientDto: UpdateIngredientDto): Promise<IngredientDto> {
     const existingIngredient = await this.database.ingredient.findUnique({
       where: { id },
     });
@@ -162,7 +162,7 @@ export class IngredientsService {
     });
   }
 
-  private formatIngredientResponse(ingredient: any): IngredientResponseDto {
+  private formatIngredientResponse(ingredient: any): IngredientDto {
     return {
       id: ingredient.id,
       name: ingredient.name,

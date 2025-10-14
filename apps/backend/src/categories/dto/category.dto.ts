@@ -1,4 +1,4 @@
-export class CategoryResponseDto {
+export class CategoryDto {
   id: string;
   name: string;
   description?: string;
@@ -7,8 +7,8 @@ export class CategoryResponseDto {
   };
 }
 
-export class PaginatedCategoryResponseDto {
-  categories: CategoryResponseDto[];
+export class PaginatedCategoryDto {
+  categories: CategoryDto[];
   total: number;
   page: number;
   limit: number;

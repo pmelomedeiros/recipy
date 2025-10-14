@@ -1,4 +1,4 @@
-export class UserResponseDto {
+export class UserDto {
   id: string;
   email: string;
   name: string;
@@ -10,8 +10,8 @@ export class UserResponseDto {
   };
 }
 
-export class PaginatedUserResponseDto {
-  users: UserResponseDto[];
+export class PaginatedUserDto {
+  users: UserDto[];
   total: number;
   page: number;
   limit: number;

@@ -3,13 +3,13 @@ import { DatabaseService } from '../database/database.service';
 import { CreateRecipeDto } from './dto/create-recipe.dto';
 import { UpdateRecipeDto } from './dto/update-recipe.dto';
 import { QueryRecipeDto } from './dto/query-recipe.dto';
-import { RecipeResponseDto, PaginatedRecipeResponseDto } from './dto/recipe-response.dto';
+import { RecipeDto, PaginatedRecipeDto } from './dto/recipe.dto';
 
 @Injectable()
 export class RecipesService {
   constructor(private readonly database: DatabaseService) {}
 
-  async create(createRecipeDto: CreateRecipeDto): Promise<RecipeResponseDto> {
+  async create(createRecipeDto: CreateRecipeDto): Promise<RecipeDto> {
     const { ingredients, categoryIds, ...recipeData } = createRecipeDto;
 
     // Verify user exists
@@ -66,7 +66,7 @@ export class RecipesService {
     return this.formatRecipeResponse(recipe);
   }
 
-  async findAll(queryDto: QueryRecipeDto): Promise<PaginatedRecipeResponseDto> {
+  async findAll(queryDto: QueryRecipeDto): Promise<PaginatedRecipeDto> {
     const { page = 1, limit = 10, search, difficulty, categoryId, userId, sortBy = 'createdAt', sortOrder = 'desc' } = queryDto;
     const skip = (page - 1) * limit;
 
@@ -115,7 +115,7 @@ export class RecipesService {
     };
   }
 
-  async findOne(id: string): Promise<RecipeResponseDto> {
+  async findOne(id: string): Promise<RecipeDto> {
     const recipe = await this.database.recipe.findUnique({
       where: { id },
       include: this.getRecipeInclude(),
@@ -128,7 +128,7 @@ export class RecipesService {
     return this.formatRecipeResponse(recipe);
   }
 
-  async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<RecipeResponseDto> {
+  async update(id: string, updateRecipeDto: UpdateRecipeDto): Promise<RecipeDto> {
     const existingRecipe = await this.database.recipe.findUnique({
       where: { id },
     });
@@ -230,11 +230,11 @@ export class RecipesService {
     });
   }
 
-  async findByUser(userId: string, queryDto: QueryRecipeDto): Promise<PaginatedRecipeResponseDto> {
+  async findByUser(userId: string, queryDto: QueryRecipeDto): Promise<PaginatedRecipeDto> {
     return this.findAll({ ...queryDto, userId });
   }
 
-  async findByCategory(categoryId: string, queryDto: QueryRecipeDto): Promise<PaginatedRecipeResponseDto> {
+  async findByCategory(categoryId: string, queryDto: QueryRecipeDto): Promise<PaginatedRecipeDto> {
     return this.findAll({ ...queryDto, categoryId });
   }
 
@@ -273,7 +273,7 @@ export class RecipesService {
     };
   }
 
-  private formatRecipeResponse(recipe: any): RecipeResponseDto {
+  private formatRecipeResponse(recipe: any): RecipeDto {
     return {
       id: recipe.id,
       title: recipe.title,
